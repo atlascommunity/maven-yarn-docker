@@ -1,8 +1,8 @@
-FROM adoptopenjdk/openjdk8:jdk8u262-b10
+FROM adoptopenjdk/openjdk8:jdk8u292-b10-centos
 
-ARG MAVEN_VERSION="3.6.3"
-ARG NODE_VERSION="10.22.1"
-ARG YARN_VERSION="1.17.3"
+ARG MAVEN_VERSION="3.8.3"
+ARG NODE_VERSION="12.19.0"
+ARG YARN_VERSION="1.22.15"
 ARG DOCKER_MACHINE_VERSION="0.16.0"
 
 RUN mkdir -p /usr/share/maven \
@@ -95,6 +95,3 @@ RUN set -ex \
   && ln -s /opt/yarn-v$YARN_VERSION/bin/yarn /usr/local/bin/yarn \
   && ln -s /opt/yarn-v$YARN_VERSION/bin/yarnpkg /usr/local/bin/yarnpkg \
   && rm yarn-v$YARN_VERSION.tar.gz.asc yarn-v$YARN_VERSION.tar.gz
-
-RUN curl -L https://github.com/docker/machine/releases/download/v$DOCKER_MACHINE_VERSION/docker-machine-$(uname -s)-$(uname -m) > /usr/local/bin/docker-machine && \
-  chmod +x /usr/local/bin/docker-machine
