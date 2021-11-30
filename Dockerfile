@@ -1,19 +1,20 @@
 FROM adoptopenjdk/openjdk8:jdk8u312-b07-centos
 
-ARG MAVEN_VERSION="3.8.3"
 ARG NODE_VERSION="12.22.7"
 ARG YARN_VERSION="1.22.15"
-ARG DOCKER_MACHINE_VERSION="0.16.0"
 ARG ARCH="x64"
 
-RUN mkdir -p /usr/share/maven \
-    && curl -Lso  /tmp/maven.tar.gz https://apache.osuosl.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz \
-    && tar -xzC /usr/share/maven --strip-components=1 -f /tmp/maven.tar.gz \
-    && rm -v /tmp/maven.tar.gz \
-    && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
+RUN yum install -y git
 
-ENV MAVEN_HOME /usr/share/maven
 ENV MAVEN_CONFIG "/root/.m2"
+
+RUN echo $'[Artifactory]\nname=Artifactory\nbaseurl=https://packages.atlassian.com/yum/atlassian-sdk-rpm/\nenabled=1\ngpgcheck=0' >> /etc/yum.repos.d/artifactory.repo \
+    && yum install -y atlassian-plugin-sdk \
+    && atlas-version
+
+COPY ./example /example
+RUN cd /example && atlas-package
+RUN rm -rf /example/target
 
 # install node + yarn
 # copied from https://github.com/nodejs/docker-node/blob/main/12/stretch/Dockerfile
